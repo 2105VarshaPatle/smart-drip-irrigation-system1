@@ -1,54 +1,25 @@
-#define BLYNK_TEMPLATE_ID "TMPL3U35_-eLU"
-#define BLYNK_TEMPLATE_NAME " Soil Drip Irrigation System"
-#define BLYNK_PRINT Serial
+# 🌱 Smart Drip Irrigation System (IoT + ML + Dashboard)
 
-#include <ESP8266WiFi.h>
-#include <BlynkSimpleEsp8266.h>
+## Overview
+This project is a *Smart Drip Irrigation System* designed for precision agriculture. It integrates:
 
-// Blynk authentication token
-char auth[] = "yA7sqwqgv0O-2Y4n8B-vY894aN-GeGwX";
-char ssid[] = "Galaxy F23 5G 6ECB"; // Enter your WIFI name
-char pass[] = "21052004"; // Enter your WIFI password
+- *IoT sensors* (soil moisture, NPK)  
+- *Automated pump control* based on soil moisture  
+- *Machine Learning prediction* for irrigation decisions  
+- *Interactive Streamlit dashboard* for real-time monitoring and fertilizer recommendations  
 
-BlynkTimer timer;
+This system helps *save water, reduce manual labor, and **improve crop health*.
 
-#define sensor A0 // Soil moisture sensor pin
-#define relayPin D3 // Relay pin
+---
 
-void setup() {
-  Serial.begin(9600);
-  pinMode(relayPin, OUTPUT);
-  digitalWrite(relayPin, HIGH); // Initialize relay as OFF
+## Features
+- 📡 *Live Soil Moisture Monitoring*: Sensor data displayed on a real-time dashboard.  
+- 💧 *Automatic Pump Control*: Pump turns ON/OFF based on current soil moisture.  
+- 🤖 *ML-Based Irrigation Prediction*: Predicts whether irrigation is needed using a trained model.  
+- 🌾 *Fertilizer Recommendation*: Advises on Nitrogen (N), Phosphorus (P), and Potassium (K) based on sensor readings.  
+- 📈 *Moisture Trend Chart + Forecast*: Displays historical and predicted soil moisture values.  
+- ⚡ *Future Scope*: Predictive alerts for pump activation, 6–12 hour moisture forecasting.
 
-  Blynk.begin(auth, ssid, pass); // Initialize Blynk
-  timer.setInterval(2000L, soilMoistureSensor); // Call sensor function every 2 seconds
-}
+---
 
-BLYNK_WRITE(V1) { 
-  if (param.asInt() == 1) { 
-    digitalWrite(relayPin, LOW); // Turn on water pump
-  } else { 
-    digitalWrite(relayPin, HIGH); // Turn off water pump
-  }
-}
-
-// Get the soil moisture values
-void soilMoistureSensor() {
-  int value = analogRead(sensor);
-  value = map(value, 0, 1024, 0, 100);
-  value = (value - 100) * -1;
-  Blynk.virtualWrite(V0, value); // Send moisture level to Blynk
-  Serial.print("Moisture Value: ");
-  Serial.println(value); // Print moisture level for debugging
-
-  if (value < 30) { // Adjust threshold as needed
-    digitalWrite(relayPin, LOW); // Turn on relay (water pump)
-  } else {
-    digitalWrite(relayPin, HIGH); // Turn off relay (water pump)
-  }
-}
-
-void loop() {
-  Blynk.run(); // Run the Blynk library 
-  timer.run(); // Run the Blynk timer
-}
+## Project Structure
